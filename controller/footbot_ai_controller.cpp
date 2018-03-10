@@ -13,7 +13,7 @@
 /****************************************/
 
 CFootBotAIController::CFootBotAIController() :
-   m_socket(m_io_service, udp::endpoint(udp::v4(), m_port)),
+   //m_socket(m_io_service, udp::endpoint(udp::v4(), m_port)),
    m_pcWheels(NULL),
    m_pcProximity(NULL),
    m_cAlpha(10.0f),
@@ -70,15 +70,19 @@ void CFootBotAIController::Init(TConfigurationNode& t_node) {
 /****************************************/
 
 void CFootBotAIController::startSocket(){
-  std::cerr << "Starting socket..." << std::endl;
+  m_socket = new udp::socket(m_io_service, udp::endpoint(udp::v4(), m_port));
+  //std::cout << "Starting socket..." << std::endl;
   m_io_service.run();
+  doReceive();
+  //std::cout << "Socket started..." << std::endl;
+
 }
 
 /****************************************/
 /****************************************/
 
 void CFootBotAIController::doSend(std::size_t length){
-  m_socket.async_send_to(
+  m_socket->async_send_to(
   boost::asio::buffer(m_data, length), m_sender_endpoint,
   [this](boost::system::error_code /*ec*/, std::size_t /*bytes_sent*/)
     {
@@ -92,7 +96,7 @@ void CFootBotAIController::doSend(std::size_t length){
 /****************************************/
 
 void CFootBotAIController::doReceive(){
-  m_socket.async_receive_from(
+  m_socket->async_receive_from(
     boost::asio::buffer(m_data, max_length), m_sender_endpoint,
     [this](boost::system::error_code ec, std::size_t bytes_recvd)
     {
@@ -165,6 +169,8 @@ std::array<float, 48> CFootBotAIController::ConvertTReadings(CCI_FootBotProximit
 
 void CFootBotAIController::ControlStep() {
   std::cerr << "entering control step" << std::endl;
+  m_io_service.run_one();
+
   // get the action to execute
   //float wheel_speed = m_env->getActions(m_fb_id);
   //std::cerr << "Action [" << m_fb_id << "]: " << wheel_speed << std::endl;

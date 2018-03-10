@@ -20,7 +20,7 @@ class Argos:
     def start(self):
         while not self.argos_process.poll():
             m_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            m_socket.sendto(("Hello....").encode(), ('127.0.0.1', 3031))
+            m_socket.sendto(("Hello...").encode(), ('127.0.0.1', 3030))
             print("Message sent...")
 
             #print("Memory usage: ", self.memory_usage(self.argos_process.pid) / 1024**3)

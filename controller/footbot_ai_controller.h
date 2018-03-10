@@ -36,8 +36,9 @@
 #include <argos3/core/simulator/entity/entity.h>
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
 
+//s boost for c++03
+#include <boost/bind.hpp>
 #include <boost/asio.hpp>
-//#include <boost/bind.hpp>
 
 #include <QElapsedTimer>
 #include <array>
@@ -191,10 +192,10 @@ private:
    enum { max_length = 1024 };
    char m_data[max_length];
    short m_port = 3030; // this must be dynamic for multiple footbots
-   udp::endpoint m_sender_endpoint;
-   boost::asio::io_service m_io_service;
-   udp::socket m_socket;
 
+   //boost::asio::io_service m_io_service;
+   udp::endpoint m_sender_endpoint;
+   udp::socket* m_socket;
 };
 
 #endif
