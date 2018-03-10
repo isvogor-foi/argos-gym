@@ -34,8 +34,10 @@
 #include <argos3/plugins/robots/generic/control_interface/ci_leds_actuator.h>
 #include <argos3/plugins/robots/foot-bot/control_interface/ci_footbot_proximity_sensor.h>
 #include <argos3/core/simulator/entity/entity.h>
-
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
+
+#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
 
 #include <QElapsedTimer>
 #include <array>
@@ -50,6 +52,7 @@
  * With this statement, you save typing argos:: every time.
  */
 using namespace argos;
+using boost::asio::ip::udp;
 
 /*
  * A controller is simply an implementation of the CCI_Controller class.
@@ -111,6 +114,8 @@ class CFootBotAIController : public CCI_Controller {
    virtual void Destroy() {}
 
    void setDataType(std::string dt);
+
+
 
 private:
 
@@ -178,6 +183,17 @@ private:
     * Set the initial position (only the info)
     */
    void setInitialPosition(CVector3 init_pos);
+
+   void startSocket();
+   void doSend(std::size_t length);
+   void doReceive();
+
+   enum { max_length = 1024 };
+   char m_data[max_length];
+   short m_port = 3030; // this must be dynamic for multiple footbots
+   udp::endpoint m_sender_endpoint;
+   boost::asio::io_service m_io_service;
+   udp::socket m_socket;
 
 };
 

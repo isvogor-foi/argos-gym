@@ -100,38 +100,6 @@
       <body position="-2.0,-0.3,0.0" orientation="0,0,0" />
       <controller config="fdc" />
     </foot-bot>
-    <foot-bot id="fu1" rab_data_size="2" rab_range="5">
-      <body position="-2.4,-0.7,0.0" orientation="0,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
-    <!-- footboot down (id: fd0, fd1) -->
-    <foot-bot id="fd0" rab_data_size="2" rab_range="5">
-      <body position="2.0,0.3,0.0" orientation="180,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
-    <foot-bot id="fd1" rab_data_size="2" rab_range="5">
-      <body position="2.4,0.7,0.0" orientation="180,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
-        <!-- footboot right (id: fr0, fr1) -->
-    <foot-bot id="fr0" rab_data_size="2" rab_range="5">
-      <body position="-0.3,2.0,0.0" orientation="270,0,0" />
-      <!--body position="-0.3,1.5,0.0" orientation="270,0,0" / -->
-      <controller config="fdc" />
-    </foot-bot>
-    <foot-bot id="fr1" rab_data_size="2" rab_range="5">
-      <body position="-0.7,2.4,0.0" orientation="270,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
-    <!-- footboot left (id: fl0, fl1) -->
-    <foot-bot id="fl0" rab_data_size="2" rab_range="5">
-      <body position="0.3,-2.0,0.0" orientation="90,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
-    <foot-bot id="fl1" rab_data_size="2" rab_range="5">
-      <body position="0.7,-2.4,0.0" orientation="90,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
 
     <!-- We distribute 5 boxes uniformly in position and rotation around Z. -->
     <distribute>
