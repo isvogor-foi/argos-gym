@@ -13,7 +13,6 @@
 /****************************************/
 
 CFootBotAIController::CFootBotAIController() :
-   //m_socket(m_io_service, udp::endpoint(udp::v4(), m_port)),
    m_pcWheels(NULL),
    m_pcProximity(NULL),
    m_cAlpha(10.0f),
@@ -61,20 +60,12 @@ void CFootBotAIController::Init(TConfigurationNode& t_node) {
    m_cGoStraightAngleRange.Set(-ToRadians(m_cAlpha), ToRadians(m_cAlpha));
    GetNodeAttributeOrDefault(t_node, "delta", m_fDelta, m_fDelta);
    GetNodeAttributeOrDefault(t_node, "velocity", m_fWheelVelocity, m_fWheelVelocity);
-
-   // run server
-   startSocket();
 }
 
 /****************************************/
 /****************************************/
 
 void CFootBotAIController::startSocket(){
-  m_socket = new udp::socket(m_io_service, udp::endpoint(udp::v4(), m_port));
-  //std::cout << "Starting socket..." << std::endl;
-  m_io_service.run();
-  doReceive();
-  //std::cout << "Socket started..." << std::endl;
 
 }
 
@@ -82,32 +73,14 @@ void CFootBotAIController::startSocket(){
 /****************************************/
 
 void CFootBotAIController::doSend(std::size_t length){
-  m_socket->async_send_to(
-  boost::asio::buffer(m_data, length), m_sender_endpoint,
-  [this](boost::system::error_code /*ec*/, std::size_t /*bytes_sent*/)
-    {
-      std::cerr << "Got something..." << std::endl;
 
-      doReceive();
-    });
 }
 
 /****************************************/
 /****************************************/
 
 void CFootBotAIController::doReceive(){
-  m_socket->async_receive_from(
-    boost::asio::buffer(m_data, max_length), m_sender_endpoint,
-    [this](boost::system::error_code ec, std::size_t bytes_recvd)
-    {
-      std::cerr << "Got something..." << std::endl;
-      if (!ec && bytes_recvd > 0){
-        doSend(bytes_recvd);
-      }
-      else{
-        doReceive();
-      }
-    });
+
 }
 
 /****************************************/
@@ -169,7 +142,6 @@ std::array<float, 48> CFootBotAIController::ConvertTReadings(CCI_FootBotProximit
 
 void CFootBotAIController::ControlStep() {
   std::cerr << "entering control step" << std::endl;
-  m_io_service.run_one();
 
   // get the action to execute
   //float wheel_speed = m_env->getActions(m_fb_id);

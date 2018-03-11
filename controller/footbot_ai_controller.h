@@ -189,13 +189,6 @@ private:
    void doSend(std::size_t length);
    void doReceive();
 
-   enum { max_length = 1024 };
-   char m_data[max_length];
-   short m_port = 3030; // this must be dynamic for multiple footbots
-
-   //boost::asio::io_service m_io_service;
-   udp::endpoint m_sender_endpoint;
-   udp::socket* m_socket;
 };
 
 #endif
