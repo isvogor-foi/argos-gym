@@ -8,7 +8,7 @@
     <system threads="0" />
     <experiment length="0"
                 ticks_per_second="10"
-                random_seed="124" />
+                random_seed="155" />
   </framework>
 
   <!-- *************** -->
@@ -96,10 +96,17 @@
     -->
 
     <!-- footboot up (id: fu0, fu1) -->
-    <foot-bot id="fu0" rab_data_size="2" rab_range="5">
-      <body position="-2.0,-0.3,0.0" orientation="0,0,0" />
-      <controller config="fdc" />
-    </foot-bot>
+
+    <distribute>
+      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
+      <entity quantity="10" max_trials="100">
+        <foot-bot id="fu0" rab_data_size="2" rab_range="5">
+          <controller config="fdc" />
+        </foot-bot>
+      </entity>
+    </distribute>
+
 
     <!-- We distribute 5 boxes uniformly in position and rotation around Z. -->
     <distribute>

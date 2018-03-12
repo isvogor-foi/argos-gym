@@ -36,12 +36,11 @@
 #include <argos3/core/simulator/entity/entity.h>
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
 
-//s boost for c++03
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-
 #include <QElapsedTimer>
 #include <array>
+
+#include <boost/bind.hpp>
+#include <boost/asio.hpp>
 
 #ifdef __APPLE__
 #include <glu.h>
@@ -188,6 +187,16 @@ private:
    void startSocket();
    void doSend(std::size_t length);
    void doReceive();
+
+   udp::socket* m_socket;
+   udp::endpoint m_sender_endpoint;
+   boost::asio::io_context* m_io_context;
+
+   short m_port = 5030;
+   enum { max_length = 1024 };
+   char m_data[max_length];
+
+   int m_id;
 
 };
 

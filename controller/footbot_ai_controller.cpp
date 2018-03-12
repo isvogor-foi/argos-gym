@@ -8,11 +8,14 @@
 #include <string>
 #include <argos3/core/utility/math/angles.h>
 #include <QImage>
+#include <string>
+
 
 /****************************************/
 /****************************************/
 
 CFootBotAIController::CFootBotAIController() :
+   //m_socket(m_io_context, udp::endpoint(udp::v4(), m_port)),
    m_pcWheels(NULL),
    m_pcProximity(NULL),
    m_cAlpha(10.0f),
@@ -60,27 +63,57 @@ void CFootBotAIController::Init(TConfigurationNode& t_node) {
    m_cGoStraightAngleRange.Set(-ToRadians(m_cAlpha), ToRadians(m_cAlpha));
    GetNodeAttributeOrDefault(t_node, "delta", m_fDelta, m_fDelta);
    GetNodeAttributeOrDefault(t_node, "velocity", m_fWheelVelocity, m_fWheelVelocity);
+
+   std::string full_id = std::string(GetId().c_str(), 5);
+   // if ID is the same, try changing the random number in .argos file
+   //std::cout<<"L: "<<full_id<<std::endl;
+   m_id = std::stoi(full_id.erase(0, 2));
+
+   startSocket();
 }
 
 /****************************************/
 /****************************************/
 
 void CFootBotAIController::startSocket(){
-
+  m_io_context = new boost::asio::io_context();
+  m_port = m_port + m_id;
+  std::cout<<"Port: " << m_port << std::endl;
+  m_socket = new udp::socket(*m_io_context, udp::endpoint(udp::v4(), m_port));
+  doReceive();
+  //m_io_context->run();
 }
 
 /****************************************/
 /****************************************/
 
 void CFootBotAIController::doSend(std::size_t length){
-
+  m_socket->async_send_to(
+      boost::asio::buffer(m_data, length), m_sender_endpoint,
+      [this](boost::system::error_code /*ec*/, std::size_t /*bytes_sent*/)
+      {
+        std::cout<<m_id<<" Got something...."<<std::endl;
+        doReceive();
+      });
 }
 
 /****************************************/
 /****************************************/
 
 void CFootBotAIController::doReceive(){
-
+  m_socket->async_receive_from(
+      boost::asio::buffer(m_data, max_length), m_sender_endpoint,
+      [this](boost::system::error_code ec, std::size_t bytes_recvd)
+      {
+        if (!ec && bytes_recvd > 0)
+        {
+          doSend(bytes_recvd);
+        }
+        else
+        {
+          doReceive();
+        }
+      });
 }
 
 /****************************************/
@@ -141,7 +174,8 @@ std::array<float, 48> CFootBotAIController::ConvertTReadings(CCI_FootBotProximit
 /*************************************/
 
 void CFootBotAIController::ControlStep() {
-  std::cerr << "entering control step" << std::endl;
+  std::cerr <<m_id<<", "<< "entering control step" << std::endl;
+  m_io_context->poll();
 
   // get the action to execute
   //float wheel_speed = m_env->getActions(m_fb_id);

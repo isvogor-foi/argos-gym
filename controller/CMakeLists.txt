@@ -11,7 +11,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 include(/usr/local/share/argos3/cmake/ARGoSCheckQTOpenGL.cmake)
 
-find_package(Boost 1.58.0 COMPONENTS system REQUIRED)
+find_package(Boost 1.66.0 COMPONENTS system REQUIRED)
 find_package(Lua REQUIRED)
 
 link_directories(${ARGOS_LIBRARY_DIRS} /usr/local/lib/argos3/)
