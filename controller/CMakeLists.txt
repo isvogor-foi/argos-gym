@@ -20,9 +20,9 @@ include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${LUA_INCLUDE_DIR}
 
 add_library(footbot_ai_controller MODULE footbot_ai_controller.h footbot_ai_controller.cpp)
 target_link_libraries(footbot_ai_controller
-  argos3core_simulator.so
-  argos3plugin_simulator_footbot.so
-  argos3plugin_simulator_genericrobot.so
+  argos3core_simulator
+  argos3plugin_simulator_footbot
+  argos3plugin_simulator_genericrobot
   ${QT_LIBRARIES} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${Boost_LIBRARIES})
 
 MESSAGE( STATUS "QT_LIBRARIES -> : " ${QT_LIBRARIES} )

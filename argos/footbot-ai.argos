@@ -100,7 +100,7 @@
     <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-      <entity quantity="10" max_trials="100">
+      <entity quantity="3" max_trials="100">
         <foot-bot id="fu0" rab_data_size="2" rab_range="5">
           <controller config="fdc" />
         </foot-bot>

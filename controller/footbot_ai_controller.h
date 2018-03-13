@@ -184,20 +184,31 @@ private:
     */
    void setInitialPosition(CVector3 init_pos);
 
-   void startSocket();
-   void doSend(std::size_t length);
-   void doReceive();
 
-   udp::socket* m_socket;
+   /**
+   * Setup sockets
+   */
+
+private:
+   udp::socket* m_in_socket;
+   udp::socket* m_out_socket;
+
    udp::endpoint m_sender_endpoint;
+   udp::endpoint m_receiver_endpoint;
+
    boost::asio::io_context* m_io_context;
 
-   short m_port = 5030;
+   short m_send_port = 5030;
+   short m_rec_port = 6030;
+
    enum { max_length = 1024 };
    char m_data[max_length];
-
    int m_id;
 
+public:
+   void startSocket();
+   void doSend(char m_data[max_length], std::size_t length);
+   void doReceive();
 };
 
 #endif

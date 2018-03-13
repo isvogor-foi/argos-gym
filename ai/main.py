@@ -3,11 +3,13 @@ import gym_argos
 from argos import argos_runner
 
 env = gym.make('ARGoS-v0')
+#env2 = gym.make('ARGoS-v0')
 
 env.reset()
 env.render()
 
-argos = argos_runner.Argos()
+#env2.reset()
+#env2.render()
 
 
-#argos.start()
+argos = argos_runner.Argos(num_robots=3)
