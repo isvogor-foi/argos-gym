@@ -1,16 +1,21 @@
 import gym
 from gym import spaces
+from argos import argos_runner, argos_io
 
 
 class ArgosEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
+        self.argos = argos_runner.Argos()
+        self.argos_io = argos_io.ArgosIO(num_robots=3, verbose=True)
         pass
 
     def render(self, mode='human'):
+        self.argos_io.send_to("yo...", 0)
+        self.argos_io.receive_from(0)
         print("Rendering...")
-        pass
+
 
     def step(self, action):
         pass

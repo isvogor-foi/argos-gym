@@ -1,15 +1,13 @@
 import gym
 import gym_argos
-from argos import argos_runner
 
 env = gym.make('ARGoS-v0')
-#env2 = gym.make('ARGoS-v0')
-
 env.reset()
-env.render()
 
-#env2.reset()
-#env2.render()
+for i in range(100000):
+    env.render()
+    #env.step()
 
 
-argos = argos_runner.Argos(num_robots=3)
+
+
