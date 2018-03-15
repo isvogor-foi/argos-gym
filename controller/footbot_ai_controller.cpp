@@ -3,12 +3,17 @@
 /* Function definitions for XML parsing */
 #include <argos3/core/utility/configuration/argos_configuration.h>
 /* 2D vector definition */
+#include <argos3/core/simulator/simulator.h>
 #include <argos3/core/utility/math/vector2.h>
 #include <argos3/core/utility/logging/argos_log.h>
 #include <string>
 #include <argos3/core/utility/math/angles.h>
 #include <QImage>
 #include <string>
+#include <argos3/core/simulator/entity/floor_entity.h>
+#include <argos3/core/utility/datatypes/color.h>
+#include <boost/algorithm/string.hpp>
+
 
 
 /****************************************/
@@ -21,6 +26,7 @@ CFootBotAIController::CFootBotAIController() :
    m_cAlpha(10.0f),
    m_fDelta(0.5f),
    m_fWheelVelocity(2.5f),
+   m_cSpace(argos::CSimulator::GetInstance().GetSpace()),
    m_cGoStraightAngleRange(-ToRadians(m_cAlpha),
                            ToRadians(m_cAlpha)) {}
 
@@ -52,6 +58,7 @@ void CFootBotAIController::Init(TConfigurationNode& t_node) {
     */
    m_pcWheels    = GetActuator<CCI_DifferentialSteeringActuator>("differential_steering");
    m_pcProximity = GetSensor  <CCI_FootBotProximitySensor      >("footbot_proximity"    );
+   m_pcPos = GetSensor  <CCI_PositioningSensor>("positioning");
    /*
     * Parse the configuration file
     *
@@ -69,6 +76,7 @@ void CFootBotAIController::Init(TConfigurationNode& t_node) {
    //std::cout<<"L: "<<full_id<<std::endl;
    m_id = std::stoi(full_id.erase(0, 2));
 
+   m_state = State();
    startSocket();
 }
 
@@ -112,7 +120,11 @@ void CFootBotAIController::doReceive(){
       {
         if (!ec && bytes_recvd > 0)
         {
-          std::cout<<"Incoming: " << m_data << std::endl;
+          std::vector<std::string> result;
+          boost::split(result, m_data, boost::is_any_of(";"));
+          //std::cout<<"Incoming: " << result[0] << std::endl;
+          m_pcWheels->SetLinearVelocity(std::stof(result[0]), std::stof(result[1]));
+
           doReceive();
         }
         else
@@ -176,16 +188,25 @@ std::array<float, 48> CFootBotAIController::ConvertTReadings(CCI_FootBotProximit
   return proxima;
 }
 
+std::string CFootBotAIController::State::GetPackage(){
+  return std::to_string(m_global_x) + ";" + std::to_string(m_global_y);
+}
 /*************************************/
 /*************************************/
 
 void CFootBotAIController::ControlStep() {
-  std::cerr <<m_id<<", "<< "entering control step" << std::endl;
+  //std::cerr <<m_id<<", "<< "entering control step" << std::endl;
+
+  const CCI_PositioningSensor::SReading& sPosRead = m_pcPos->GetReading();
+  CColor clr = m_cSpace.GetFloorEntity().GetColorAtPoint(sPosRead.Position.GetX(), sPosRead.Position.GetY());
+  m_state.Update(sPosRead.Position.GetX(), sPosRead.Position.GetY());
 
   m_io_context->poll();
-  
-  char message[] = "From c++";
-  doSend(message, sizeof(message));
+  std::string msg = m_state.GetPackage() + ";" + std::to_string(clr.ToGrayScale());
+  char pack[msg.size() + 1];
+  strcpy(pack, msg.c_str());
+
+  doSend(pack, sizeof(pack));
 
   // get the action to execute
   //float wheel_speed = m_env->getActions(m_fb_id);

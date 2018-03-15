@@ -28,5 +28,7 @@ class ArgosIO:
 
     def receive_from(self, robot_id=0):
         message, addr = self.in_socket[robot_id].recvfrom(max_msg_size)
+        message = message.decode('utf-8')
         if self.verbose:
-            print("MSG in P <-- A[", robot_id, "]: ", message.decode('utf-8'))
+            print("MSG in P <-- A[", robot_id, "]: ", message)
+        return message

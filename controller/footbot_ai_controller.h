@@ -35,6 +35,8 @@
 #include <argos3/plugins/robots/foot-bot/control_interface/ci_footbot_proximity_sensor.h>
 #include <argos3/core/simulator/entity/entity.h>
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
+#include <argos3/core/simulator/space/space.h>
+
 
 #include <QElapsedTimer>
 #include <array>
@@ -58,6 +60,27 @@ using boost::asio::ip::udp;
  * A controller is simply an implementation of the CCI_Controller class.
  */
 class CFootBotAIController : public CCI_Controller {
+
+public:
+  class State{
+    float m_global_x;
+    float m_global_y;
+    float m_v_left;
+    float m_v_right;
+    float m_bottom_color;
+    // add neighbors, id's and distances
+
+  public:
+    State(){};
+
+    inline void Update(float global_x, float global_y){
+      m_global_x = global_x;
+      m_global_y = global_y;
+    }
+
+    std::string GetPackage();
+
+  };
 
   public:
 
@@ -115,6 +138,8 @@ class CFootBotAIController : public CCI_Controller {
 
    void setDataType(std::string dt);
 
+   State m_state;
+   CSpace& m_cSpace;
 
 
 private:
@@ -123,6 +148,8 @@ private:
    CCI_DifferentialSteeringActuator* m_pcWheels;
    /* Pointer to the foot-bot proximity sensor */
    CCI_FootBotProximitySensor* m_pcProximity;
+
+   CCI_PositioningSensor* m_pcPos;
 
    /*
     * The following variables are used as parameters for the
