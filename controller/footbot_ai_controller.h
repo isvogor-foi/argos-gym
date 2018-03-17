@@ -62,6 +62,32 @@ using boost::asio::ip::udp;
 class CFootBotAIController : public CCI_Controller {
 
 public:
+
+  struct SWheelTurningParams {
+   /*
+    * The turning mechanism.
+    * The robot can be in three different turning states.
+    */
+   enum ETurningMechanism
+   {
+      NO_TURN = 0, // go straight
+      SOFT_TURN,   // both wheels are turning forwards, but at different speeds
+      HARD_TURN    // wheels are turning with opposite speeds
+   } TurningMechanism;
+   /*
+    * Angular thresholds to change turning state.
+    */
+   CRadians HardTurnOnAngleThreshold;
+   CRadians SoftTurnOnAngleThreshold;
+   CRadians NoTurnAngleThreshold;
+   /* Maximum wheel speed */
+   Real MaxSpeed;
+
+   SWheelTurningParams();
+   void Init(TConfigurationNode& t_tree);
+   };
+
+
   class State{
     float m_global_x;
     float m_global_y;
@@ -140,6 +166,7 @@ public:
 
    State m_state;
    CSpace& m_cSpace;
+
 
 
 private:
@@ -231,6 +258,9 @@ private:
    enum { max_length = 1024 };
    char m_data[max_length];
    int m_id;
+
+   SWheelTurningParams m_sWheelTurningParams;
+   void SetWheelSpeedsFromVector(const CVector2& c_heading);
 
 public:
    void startSocket();
