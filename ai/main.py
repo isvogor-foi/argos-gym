@@ -1,10 +1,10 @@
 import gym
 import gym_argos
 from argos import argos_runner, argos_io
-
+import sys
 # initialize and run argos
 
-num_robots = 5
+num_robots = 15
 argos = argos_runner.Argos()
 argos_io = argos_io.ArgosIO(num_robots, verbose=False)
 environments = []
@@ -23,7 +23,7 @@ for i_episode in range(100):
             action = environments[i].action_space.sample()
             observation, reward, done, info = environments[i].step(action)
             if t % 100 == 0:
-                print("[", i,"]: ", observation)
+                print("[", i,"]: ", reward, ", ", observation)
             #if observation <= 10:
             #    print("Episode finished after {} timesteps".format(t+1))
             #    break

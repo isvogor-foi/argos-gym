@@ -82,6 +82,9 @@ void CFootBotAIController::Init(TConfigurationNode& t_node) {
 
    m_state = State();
    startSocket();
+
+   //argos::CSimulator::GetInstance().Reset();
+   //argos::CSimulator::GetInstance().Init();
 }
 
 /****************************************/
@@ -92,9 +95,7 @@ void CFootBotAIController::startSocket(){
 
   m_send_port = m_send_port + m_id;
   m_rec_port = m_rec_port + m_id;
-
-  std::cout<<"Port: " << m_send_port << ", " << m_rec_port << std::endl;
-
+  //std::cout<<"Port: " << m_send_port << ", " << m_rec_port << std::endl;
   m_in_socket = new udp::socket(*m_io_context, udp::endpoint(udp::v4(), m_send_port));
   m_out_socket = new udp::socket(*m_io_context);
   m_out_socket->open(boost::asio::ip::udp::v4());
@@ -126,10 +127,9 @@ void CFootBotAIController::doReceive(){
         {
           std::vector<std::string> result;
           boost::split(result, m_data, boost::is_any_of(";"));
-          SetWheelSpeedsFromVector(CVector2(std::stof(result[0]), std::stof(result[1])));
+          //SetWheelSpeedsFromVector(CVector2(std::stof(result[0]), std::stof(result[1])));
           //std::cout<<"Incoming: " << result[0] << std::endl;
-          //m_pcWheels->SetLinearVelocity(std::stof(result[0]), std::stof(result[1]));
-
+          m_pcWheels->SetLinearVelocity(std::stof(result[0]), std::stof(result[1]));
           doReceive();
         }
         else
@@ -286,22 +286,6 @@ void CFootBotAIController::ControlStep() {
   strcpy(pack, msg.c_str());
 
   doSend(pack, sizeof(pack));
-
-  // get the action to execute
-  //float wheel_speed = m_env->getActions(m_fb_id);
-  //std::cerr << "Action [" << m_fb_id << "]: " << wheel_speed << std::endl;
-  // execute the action (throttle)
-  //m_pcWheels->SetLinearVelocity(wheel_speed, wheel_speed);
-
-  // set the new state for this footbot
-  //if(data_type != "frame")
-  //{
-  //  CCI_FootBotProximitySensor::TReadings proximities = m_pcProximity->GetReadings();
-  //  std::array<float, 48> proxim_readings = this->ConvertTReadings(proximities);
-  //  m_distance += (wheel_speed/10);
-    //CVector3 dist = m_footbot->GetEmbodiedEntity().GetOriginAnchor().Position - m_initial_position;
-    //m_distance = dist.Length();
-  //}
 }
 
 /****************************************/

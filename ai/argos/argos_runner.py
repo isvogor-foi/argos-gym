@@ -20,7 +20,7 @@ class Argos:
     def start(self):
         while not self.argos_process.poll():
             #print("Running...")
-            sleep(.1)
+            sleep(.15)
 
     def memory_usage(self, pid):
         proc = psutil.Process(pid)

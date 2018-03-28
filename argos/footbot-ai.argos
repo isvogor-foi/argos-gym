@@ -26,7 +26,7 @@
       <sensors>
         <positioning implementation="default" />
         <footbot_distance_scanner implementation="rot_z_only" show_rays="false" noise_std_dev="0"/>
-        <range_and_bearing implementation="medium" medium="rab" show_rays="true" noise_std_dev="0" />
+        <range_and_bearing implementation="medium" medium="rab" show_rays="false" noise_std_dev="0" />
         <footbot_proximity implementation="default" show_rays="false" />
       </sensors>
       <params alpha="7.5" delta="0.1" velocity="12" min_speed="2" max_speed="25" chosen_frame="fu0" />
@@ -100,7 +100,7 @@
     <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-      <entity quantity="5" max_trials="100">
+      <entity quantity="15" max_trials="100">
         <foot-bot id="fu0" rab_data_size="2" rab_range="5">
           <controller config="fdc" />
         </foot-bot>
